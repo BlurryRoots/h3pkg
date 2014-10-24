@@ -14,7 +14,10 @@ function h3pkg_sync () {
 	}
 
 	echo "Syncing from $H3PKG_INDEX"
-	curl "$H3PKG_INDEX" -o "$H3PKG_HOME"/index -#
+	curl "$H3PKG_INDEX" -o "$H3PKG_PACKAGE_HOME/.cache/index" -#
 
 	return 0
 }
+
+# call main function
+h3pkg_sync $@

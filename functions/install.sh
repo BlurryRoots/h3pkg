@@ -11,7 +11,7 @@ function h3pkg_install () {
 		return 1
 	}
 
-	[ ! -f $H3PKG_HOME/index ] && {
+	[ ! -f $H3PKG_PACKAGE_HOME/.cache/index ] && {
 		echo "No index found! Please run 'h3pkg sync' first!"
 		return 1
 	}
@@ -38,7 +38,7 @@ function h3pkg_install () {
 			has_package=1
 			break
 		}
-	done < $H3PKG_HOME/index
+	done < $H3PKG_PACKAGE_HOME/.cache/index
 
 	[ $has_package -eq 0 ] && {
 		echo "no package name $package_name found!"
@@ -68,3 +68,6 @@ function h3pkg_install () {
 
 	return 0
 }
+
+# call main function
+h3pkg_install $@

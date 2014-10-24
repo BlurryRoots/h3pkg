@@ -12,6 +12,11 @@ function h3pkg_config () {
 	}
 
 	#
+	[ ! -e $H3PKG_HOME/config ] && {
+		mkdir -p $H3PKG_HOME/config
+	}
+
+	#
 	local key="$1"
 	local value="$2"
 	local failed=0
@@ -20,11 +25,11 @@ function h3pkg_config () {
 	case $key in
 		"package_home") {
 			#echo "package_home $value" > $H3PKG_HOME/config
-			export H3PKG_PACKAGE_HOME="$value"
+			echo $value > $H3PKG_HOME/config/package-home
 		} ;;
 
 		"user") {
-			export H3PKG_USER="$value"
+			echo $value > $H3PKG_HOME/config/user
 		} ;;
 
 		*) {
@@ -39,3 +44,6 @@ function h3pkg_config () {
 
 	return $failed
 }
+
+# call main function
+h3pkg_config $@

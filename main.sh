@@ -6,10 +6,6 @@ export H3PKG_REMOTE_HOME=ssh.informatik.haw-hamburg.de
 export H3PKG_USER="no_user"
 export H3PKG_PACKAGE_HOME="$HOME/Documents/haw-packages"
 
-source $H3PKG_HOME/functions/sync.sh
-source $H3PKG_HOME/functions/install.sh
-source $H3PKG_HOME/functions/config.sh
-
 # prints usage
 function _h3pkg_usage () {
 	echo "usage: h3pkg <cmd> [options] [args]"
@@ -17,30 +13,43 @@ function _h3pkg_usage () {
 
 # main function
 function h3pkg () {
-	if [ "$1" = "" ]; then
-	{
+	[ "$1" = "" ] && {
 		# if there is no parameter
 		# print usage
 		_h3pkg_usage
-	}
-	else
-	{
+	} || {
 		# pop parameter 1
 		local cmd="$1"
 		shift
 
+		# update config variables
+		[ -e $H3PKG_HOME/config/user ] && {
+			export H3PKG_USER=`cat $H3PKG_HOME/config/user`
+		}
+		[ -e $H3PKG_HOME/config/package-home ] && {
+			export H3PKG_PACKAGE_HOME=`cat $H3PKG_HOME/config/package-home`
+		}
+
+		# prepare shell to run subfunctions
+		local runner
+		[ -e $SHELL ] && {
+			runner=$SHELL
+		} || {
+			runner=sh
+		}
+
 		# switch on command
 		case $cmd in
 			"sync") {
-				h3pkg_sync $@
+				$runner $H3PKG_HOME/functions/sync.sh $@
 			} ;;
 
 			"install") {
-				h3pkg_install $@
+				$runner $H3PKG_HOME/functions/install.sh $@
 			} ;;
 
 			"config") {
-				h3pkg_config $@
+				$runner $H3PKG_HOME/functions/config.sh $@
 			} ;;
 
 			*) {
@@ -49,6 +58,5 @@ function h3pkg () {
 			} ;;
 		esac
 	}
-	fi
 }
 
